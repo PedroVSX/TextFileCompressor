@@ -1,0 +1,4 @@
+TODO LIST
+
+TODO 1 - Priority Queue with frequency chars
+TODO 2 - Build a tree based on PriorityQueue
