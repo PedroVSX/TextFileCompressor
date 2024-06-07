@@ -11,8 +11,8 @@ public class Main {
     static HashTable hash = new HashTable(256);
     static PriorityQueue<HuffmanNode> queue = new PriorityQueue<>();
     static HuffmanTree tree = new HuffmanTree();
-    static String filePath = "C:\\Users\\Pichau\\Desktop\\texto.txt";
-    static String fileCreationPath = "C:\\Users\\Pichau\\Desktop\\textoCompactado.txt";
+    static String filePath = "C:\\Users\\Pichau\\Documents\\Programar\\java\\CompressorDeTexto\\src\\texto.txt";
+    static String fileCreationPath = "C:\\Users\\Pichau\\Documents\\Programar\\java\\CompressorDeTexto\\src\\textoCompactado.txt";
 
     public static void main(String[] args) throws IOException {
         String text = navigateCharacters(filePath);

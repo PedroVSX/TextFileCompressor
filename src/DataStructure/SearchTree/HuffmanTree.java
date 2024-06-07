@@ -39,14 +39,40 @@ public class HuffmanTree {
         }
     }
 
+    private String getBinaryValue(Character character) {
+        String binaryValue = Integer.toBinaryString(character);
+
+        while (binaryValue.length() < 8) {
+            binaryValue = "0" + binaryValue;
+        }
+
+        return binaryValue;
+    }
+
+    private String generateTreeCode(HuffmanNode root) {
+        if (root == null) {
+            return "";
+        }
+
+        if (isLeaf(root)) {
+            return "1" + getBinaryValue(root.getCharacter());
+        } else {
+            return "0" + generateTreeCode(root.getLeftChild()) + generateTreeCode(root.getRightChild());
+        }
+    }
+
     public String encode(String text) {
-        String encodedText = "";
+        String encodedText = generateTreeCode(root);
 
         for (char c : text.toCharArray()) {
             encodedText += getCodeForCharacter(root, c);
         }
 
         return encodedText;
+    }
+
+    private boolean isLeaf(HuffmanNode branch) {
+        return branch.getLeftChild() == null && branch.getRightChild() == null;
     }
 
     public void printHuffmanCodes() {
