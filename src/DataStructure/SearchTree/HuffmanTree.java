@@ -6,13 +6,14 @@ import DataStructure.PriorityQueue.PriorityQueue;
 
 public class HuffmanTree {
     private HuffmanNode root;
-    private HashTable charactersCode;
+    private String code;
 
     public HuffmanTree() {
         this.root = null;
-        this.charactersCode = new HashTable(256);
+        this.code = "";
     }
 
+    // Cria a árvore com base na fila de prioridade
     public void createTree(PriorityQueue<HuffmanNode> queue) {
         while (queue.size() > 1) {
             HuffmanNode left = queue.dequeue();
@@ -28,6 +29,7 @@ public class HuffmanTree {
         generateCodes(root, "");
     }
 
+    // Gera os códigos de cada caractere
     private void generateCodes(HuffmanNode node, String code) {
         if (node != null) {
             if (node.getCharacter() != null) {
@@ -39,6 +41,7 @@ public class HuffmanTree {
         }
     }
 
+    // Na código da árvore, pega o valor em binário do caractere e o transforma em 8 bits
     private String getBinaryValue(Character character) {
         String binaryValue = Integer.toBinaryString(character);
 
@@ -49,20 +52,15 @@ public class HuffmanTree {
         return binaryValue;
     }
 
-    private String generateTreeCode(HuffmanNode root) {
-        if (root == null) {
-            return "";
-        }
-
-        if (isLeaf(root)) {
-            return "1" + getBinaryValue(root.getCharacter());
-        } else {
-            return "0" + generateTreeCode(root.getLeftChild()) + generateTreeCode(root.getRightChild());
-        }
+    // Pega o valor do navigatePreOrder() e retorna o código gerado
+    private String generateTreeCode() {
+        navigatePreOrder();
+        return code;
     }
 
+    // Gera o código completo
     public String encode(String text) {
-        String encodedText = generateTreeCode(root);
+        String encodedText = generateTreeCode();
 
         for (char c : text.toCharArray()) {
             encodedText += getCodeForCharacter(root, c);
@@ -71,24 +69,7 @@ public class HuffmanTree {
         return encodedText;
     }
 
-    private boolean isLeaf(HuffmanNode branch) {
-        return branch.getLeftChild() == null && branch.getRightChild() == null;
-    }
-
-    public void printHuffmanCodes() {
-        printHuffmanCodes(root, "");
-    }
-
-    private void printHuffmanCodes(HuffmanNode branch, String prefix) {
-        if (branch != null) {
-            if (branch.getCharacter() != null) {
-                System.out.println(branch.getCharacter() + ": " + prefix);
-            }
-            printHuffmanCodes(branch.getLeftChild(), prefix + "0");
-            printHuffmanCodes(branch.getRightChild(), prefix + "1");
-        }
-    }
-
+    // Busca na árvore o caractere e retorna o código dele
     private String getCodeForCharacter(HuffmanNode branch, char character) {
         if (branch == null) {
             return "";
@@ -106,60 +87,87 @@ public class HuffmanTree {
         return getCodeForCharacter(branch.getRightChild(), character);
     }
 
-    public void showPreOrder() {
+    // Gerar o código da árvore
+    public void navigatePreOrder() {
         if (root != null) {
-            showPreOrder(root);
-            System.out.println();
+            navigatePreOrder(root);
         }
     }
 
-    private void showPreOrder(HuffmanNode branch) {
-        System.out.print(branch.getFrequency() + " ");
+    // Gerar o código da árvore
+    private void navigatePreOrder(HuffmanNode branch) {
+        if (branch.getCharacter() != null) {
+            this.code += "1" + getBinaryValue(branch.getCharacter());
+        } else {
+            this.code += "0";
+        }
 
         if (branch.getLeftChild() != null) {
-            showPreOrder(branch.getLeftChild());
+            navigatePreOrder(branch.getLeftChild());
         }
 
         if (branch.getRightChild() != null) {
-            showPreOrder(branch.getRightChild());
+            navigatePreOrder(branch.getRightChild());
         }
     }
 
-    public void showInOrder() {
-        if (root != null) {
-            showInOrder(root);
-            System.out.println();
+    // Decodificar árvore
+    public HuffmanNode decodeTree(String encodedText, int[] index) {
+        if (encodedText.charAt(index[0]) == '1') {
+            index[0]++;
+
+            String binaryLetter = encodedText.substring(index[0], index[0] + 8);
+            index[0] += 8;
+
+            char letter = (char) Integer.parseInt(binaryLetter, 2);
+            return new HuffmanNode(letter, 0);
+        } else {
+            index[0]++;
+
+            HuffmanNode left = decodeTree(encodedText, index);
+            HuffmanNode right = decodeTree(encodedText, index);
+
+            return new HuffmanNode(0, left, right);
         }
     }
 
-    private void showInOrder(HuffmanNode branch) {
-        if (branch.getLeftChild() != null) {
-            showInOrder(branch.getLeftChild());
+    // Decodificar mensagem
+    public String decodeMessage(String encodedText, HuffmanNode root) {
+        String decodedText = "";
+        HuffmanNode current = root;
+
+        for (int i = 0; i < encodedText.length(); i++) {
+            if (encodedText.charAt(i) == '0') {
+                current = current.getLeftChild();
+            } else {
+                current = current.getRightChild();
+            }
+
+            if (isLeaf(current)) {
+                decodedText += current.getCharacter();
+                current = root;
+            }
         }
 
-        System.out.print(branch.getFrequency() + " ");
-
-        if (branch.getRightChild() != null) {
-            showInOrder(branch.getRightChild());
-        }
+        return decodedText;
     }
 
-    public void showPostOrder() {
-        if (root != null) {
-            showPostOrder(root);
-            System.out.println();
-        }
+    // Verifica se o nó é uma folha
+    public boolean isLeaf(HuffmanNode branch) {
+        return branch.getLeftChild() == null && branch.getRightChild() == null;
     }
 
-    private void showPostOrder(HuffmanNode branch) {
-        if (branch.getLeftChild() != null) {
-            showPostOrder(branch.getLeftChild());
-        }
+    public void printHuffmanCodes() {
+        printHuffmanCodes(root, "");
+    }
 
-        if (branch.getRightChild() != null) {
-            showPostOrder(branch.getRightChild());
+    private void printHuffmanCodes(HuffmanNode branch, String prefix) {
+        if (branch != null) {
+            if (branch.getCharacter() != null) {
+                System.out.println(branch.getCharacter() + ": " + prefix);
+            }
+            printHuffmanCodes(branch.getLeftChild(), prefix + "0");
+            printHuffmanCodes(branch.getRightChild(), prefix + "1");
         }
-
-        System.out.print(branch.getFrequency() + " ");
     }
 }
