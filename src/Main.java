@@ -12,7 +12,7 @@ public class Main {
     static HuffmanTree tree = new HuffmanTree();
     static String filePath = "C:\\Users\\Pichau\\Documents\\Programar\\java\\CompressorDeTexto\\src\\texto.txt";
     static String fileCreationPath = "C:\\Users\\Pichau\\Documents\\Programar\\java\\CompressorDeTexto\\src\\textoCompactado.txt";
-    static String decodedFile = "C:\\Users\\Pichau\\Documents\\Programar\\java\\CompressorDeTexto\\src\\textoDecodificado.txt";
+    static String decodedFile = "C:\\Users\\Pichau\\Documents\\Programar\\java\\CompressorDeTexto\\src\\textoDescompactado.txt";
 
     public static void main(String[] args) throws IOException {
         System.out.println("Olá, Gilson! Vamos testar aí o nosso Compressor de Texto.");
@@ -45,13 +45,14 @@ public class Main {
 
             } else if (choice == 2) {
                 // Descomprimir arquivo
+                HuffmanTree newTree = new HuffmanTree();
                 String encodedFile = getEncodedFile(fileCreationPath);
                 int[] index = {0};
 
-                HuffmanNode root = tree.decodeTree(encodedFile, index);
+                HuffmanNode root = newTree.decodeTree(encodedFile, index);
                 String encodedText = encodedFile.substring(index[0]);
 
-                String decodedText = tree.decodeMessage(encodedText, root);
+                String decodedText = newTree.decodeMessage(encodedText, root);
 
                 FileWriter writer = new FileWriter(decodedFile);
                 writer.write(decodedText);

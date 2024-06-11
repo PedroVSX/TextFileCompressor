@@ -41,7 +41,7 @@ public class HuffmanTree {
         }
     }
 
-    // Na código da árvore, pega o valor em binário do caractere e o transforma em 8 bits
+    // No código da árvore, pega o valor em binário do caractere e o transforma em 8 bits
     private String getBinaryValue(Character character) {
         String binaryValue = Integer.toBinaryString(character);
 
@@ -63,14 +63,14 @@ public class HuffmanTree {
         String encodedText = generateTreeCode();
 
         for (char c : text.toCharArray()) {
-            encodedText += getCodeForCharacter(root, c);
+            encodedText += getCodeFromCharacter(root, c);
         }
 
         return encodedText;
     }
 
     // Busca na árvore o caractere e retorna o código dele
-    private String getCodeForCharacter(HuffmanNode branch, char character) {
+    private String getCodeFromCharacter(HuffmanNode branch, char character) {
         if (branch == null) {
             return "";
         }
@@ -79,12 +79,12 @@ public class HuffmanTree {
             return branch.getCode();
         }
 
-        String left = getCodeForCharacter(branch.getLeftChild(), character);
+        String left = getCodeFromCharacter(branch.getLeftChild(), character);
         if (!left.isEmpty()) {
             return left;
         }
 
-        return getCodeForCharacter(branch.getRightChild(), character);
+        return getCodeFromCharacter(branch.getRightChild(), character);
     }
 
     // Gerar o código da árvore
